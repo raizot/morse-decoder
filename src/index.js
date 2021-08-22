@@ -37,50 +37,49 @@ const MORSE_TABLE = {
     '-----':  '0',
     '**********': ' '
 };
-
 function decode(expr) {
-    let arrStr= expr.split('');
-    let morseArr=[];
-    let morseBinary=[];
-    for (let i = 0; i < arrStr.length; i++) {
-      for (let key in MORSE_TABLE) {
-        if (arrStr[i] == MORSE_TABLE[key]) {
-          morseArr.push(key)
-        }
+  let arrExpr=expr.split('');
+  let arr = [];
+  let binary = [];
+  let morseElement=[]
+  for (let i = 0; i < arrExpr.length+1; i++) {
+    if(i > 9  && i % 10 == 0){
+      binary.push(arr.join(''));
+      arr = [];
+    }
+    arr.push(arrExpr[i]);
+  }
+  for (let i = 0; i < binary.length; i++) {
+    let arr=[];
+    let arrBinary = binary[i].split('');
+    for (let j = 0; j < 12; j++){
+      if (arrBinary[j] == '1' && arrBinary[j+1] == '0') {
+        j += 1;
+        arr.push('.');
+      }
+      if (arrBinary[j] == '1' && arrBinary[j + 1] == '1') {
+        j += 1;
+        arr.push('-');
+      }
+      if (arrBinary[j] == "*"){
+        j = 10;
+        arr.push('**********');
       }
     }
-  for (let i = 0; i < morseArr.length; i++) {
-    let morseSplit = morseArr[i].split('');
-    let arrNum = [];
-    let arrSplit =[];
-        if (morseArr[i].includes("*")) {
-          arrNum.push("**********")
-        }
-    morseSplit.forEach(element => {
-      if (element == '-') {
-        arrNum.push("11");
+    morseElement.push(arr.join(''));
+  }
+  let lettersArr =[];
+  for (let i = 0; i < morseElement.length; i++) {
+    for (let key in MORSE_TABLE) {
+      // console.log(key);
+      if (morseElement[i] == key) {
+        lettersArr.push(MORSE_TABLE[key])
       }
-      if(element == '.'){
-      arrNum.push("10");
-      }
-    });
-    arrNum.forEach(elem =>{
-      let num = elem.split('');
-      num.forEach(num => {
-         arrSplit.push(num);
-      })
-    });
-    for (let i = 0; i < 10; i++) {
-      if (arrSplit.length < 10) {
-        arrSplit.unshift('0');
-      }
-    }
-    morseBinary.push(arrSplit.join(''));
-  } 
-  console.log(arrStr);
-  return morseBinary.join('');
+  }
 }
+  return lettersArr.join('');
 
+}
 module.exports = {
     decode
 }
